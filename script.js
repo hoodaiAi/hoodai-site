@@ -130,7 +130,13 @@
   /* active section highlight */
   const navItems = [...links.querySelectorAll("a")];
   const sections = navItems
-    .map((a) => document.querySelector(a.getAttribute("href")))
+    .map((a) => {
+      const href = a.getAttribute("href");
+      // only real "#section" anchors — skip "#" (buy button) which is an invalid selector
+      return href && href.length > 1 && href.charAt(0) === "#"
+        ? document.querySelector(href)
+        : null;
+    })
     .filter(Boolean);
   const spy = new IntersectionObserver(
     (entries) => {
