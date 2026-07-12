@@ -212,6 +212,28 @@
   );
   counters.forEach((c) => cObs.observe(c));
 
+  /* ---- buy modal (pre-launch: token not live yet) ---- */
+  (function () {
+    const modal = document.getElementById("buyModal");
+    if (!modal) return;
+    const openModal = (e) => {
+      e.preventDefault();
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+    const closeModal = () => {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+    document.querySelectorAll("[data-buy]").forEach((b) => b.addEventListener("click", openModal));
+    modal.querySelectorAll("[data-close]").forEach((c) => c.addEventListener("click", closeModal));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+    });
+  })();
+
   /* ---- newsletter (demo, no backend) ---- */
   const news = document.getElementById("news");
   const msg = document.getElementById("newsMsg");
