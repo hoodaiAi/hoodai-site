@@ -218,25 +218,33 @@
   );
   counters.forEach((c) => cObs.observe(c));
 
-  /* ---- buy modal (pre-launch: token not live yet) ---- */
+  /* ---- contract address: copy to clipboard ---- */
   (function () {
-    const modal = document.getElementById("buyModal");
-    if (!modal) return;
-    const openModal = (e) => {
-      e.preventDefault();
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-    };
-    const closeModal = () => {
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
-    };
-    document.querySelectorAll("[data-buy]").forEach((b) => b.addEventListener("click", openModal));
-    modal.querySelectorAll("[data-close]").forEach((c) => c.addEventListener("click", closeModal));
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+    const btn = document.getElementById("caCopy");
+    const addr = document.getElementById("caAddr");
+    if (!btn || !addr) return;
+    btn.addEventListener("click", async () => {
+      const text = addr.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        // fallback for older/insecure contexts
+        const t = document.createElement("textarea");
+        t.value = text;
+        t.style.position = "fixed";
+        t.style.opacity = "0";
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        document.body.removeChild(t);
+      }
+      const original = btn.textContent;
+      btn.textContent = "Copied!";
+      btn.classList.add("ca__copy--done");
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove("ca__copy--done");
+      }, 1600);
     });
   })();
 
